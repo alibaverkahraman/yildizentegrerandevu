@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller"],function(e){"use strict";return e.extend("com.uisap.randevu.controller.Login",{onInit:function(){},login(e){const o=this.getView().byId("username").getValue();const n=this.getView().byId("password").getValue();if(o==="demo"&&n==="demo"){window.location.href="#/Reservation"}else{sap.m.MessageToast.show("Kullanıcı adı veya şifre hatalı")}}})});
+//# sourceMappingURL=Login.controller.js.map

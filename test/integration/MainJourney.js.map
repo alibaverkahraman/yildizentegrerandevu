@@ -1,0 +1,1 @@
+{"version":3,"file":"MainJourney.js","names":["sap","ui","define","opaTest","Given","When","Then","iStartMyApp","onTheMainPage","iShouldSeeTheTitle","iTeardownMyApp"],"sources":["MainJourney-dbg.js"],"mappings":"AAAAA,IAAIC,GAAGC,OAAO,CACV,uBAEA,gBACD,SAAUC,GACT,aAEAA,EAAQ,sBAAuB,SAAUC,EAAOC,EAAMC,GAGlDF,EAAMG,cAMND,EAAKE,cAAcC,qBAGnBH,EAAKI,gBAET,EAEJ"}

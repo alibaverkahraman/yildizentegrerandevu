@@ -1,0 +1,72 @@
+<mvc:View
+	controllerName="com.uisap.randevu.controller.Login"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0">
+	<FlexBox
+		class="login-bg"
+		width="100%"
+		height="100%"
+		justifyContent="Center"
+		alignItems="Center"
+		direction="Column">
+		<FlexBox
+			width="100%"
+			direction="Column"
+			justifyContent="Center"
+			alignItems="Center"
+			class="glass max-500 pa-3">
+			<Image
+				class="mt-5"
+				src="./assets/img/Yıldız_Entegre_Logo.png"/>
+			<Text
+				text="RANDEVU SİSTEMİ"
+				class="mt-2 fw-bold"/>
+			<VBox class="center-center w-100 my-5">
+				<FlexBox
+					alignContent="Center"
+					alignItems="Center"
+					justifyContent="Center">
+					<core:Icon
+						src="sap-icon://employee"
+						size="1.2rem"
+						color="Default"
+						class="spIcon"/>
+					<Input
+						placeholder="kullanıcı adı"
+						id="username"
+						name="user"
+						value="demo"
+						class="spInput"/>
+				</FlexBox>
+				<FlexBox
+					alignContent="Center"
+					alignItems="Center"
+					justifyContent="Center"
+					class="">
+					<core:Icon
+						src="sap-icon://locked"
+						size="1.2rem"
+						color="Default"
+						class="spIcon"/>
+					<Input
+						placeholder="şifre"
+						id="password"
+						type="Password"
+						name="pass"
+						value="demo"
+						class="spInput"/>
+				</FlexBox>
+				<Button
+					id="login"
+					text="GİRİŞ YAP"
+					class="my-4 loginBtn"
+					press="login"
+					busyIndicatorDelay="0"/>
+			</VBox>
+		</FlexBox>
+	</FlexBox>
+</mvc:View>

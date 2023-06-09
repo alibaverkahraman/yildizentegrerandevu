@@ -1,0 +1,385 @@
+<mvc:View
+	controllerName="com.uisap.randevu.controller.Reservation"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	displayBlock="true"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.f"
+	xmlns:card="sap.f.cards"
+	xmlns:l="sap.ui.layout"
+	height="100%"
+	busyIndicatorDelay="0">
+	<Page
+		title="Liste"
+		showNavButton="true"
+		navButtonPress="navButtonPress"
+		showHeader="{parameters>/mainShowHeader}"
+		class="vh-100">
+		<content>
+			<SplitApp
+				id="__app"
+				initialDetail="detail"
+				initialMaster="master"
+				masterButtonText="Liste">
+				<!-- LIST -->
+				<masterPages>
+					<VBox
+						width="100%"
+						class="sp-overflow white-bg">
+						<!-- <HBox class="pl-4 pr-3 py-2 d-flex align-center justify-space-between">
+							<Title text="TICKETS / TASKS"/>
+							<Button
+								icon="sap-icon://add"
+								type="Emphasized"
+								text="YENİ"
+								visible="{userPermission>/add}"
+								class="addBtn"
+								press=".openReservationAddDialog"
+								ariaHasPopup="Dialog"/>
+						</HBox> -->
+						<!-- <html:hr class="my-0"/> -->
+						<FlexBox
+							class="py-2 pl-4 pr-3"
+							width="100%"
+							justifyContent="SpaceAround"
+							alignContent="Center"
+							alignItems="Center">
+							<items>
+								<SearchField
+									liveChange=".onSearch"
+									width="100%"
+									id="searchField"
+									placeholder="{=${filterData>/search_type} === 'tt_no' ? 'Ticket No Arayın' : 'Ticket / Task Arayın'}">
+									<layoutData>
+										<FlexItemData growFactor="1"/>
+									</layoutData>
+								</SearchField>
+								<Button
+									icon="sap-icon://excel-attachment"
+									class="ml-2"
+									press=".onDataExport"
+									text="{= ${parameters>/browserWidth} >= 1440 ? 'RAPOR' : ''}"/>
+								<Button
+									icon="sap-icon://filter"
+									class="ml-2"
+									press=".openTicketFilter"
+									text="{= ${parameters>/browserWidth} >= 1440 ? 'FİLTRE' : ''}"/>
+								<!-- <Button
+									icon="sap-icon://clear-filter"
+									class="ml-2"
+									text="SİL"
+									type="Reject"
+									visible="{filterData>/isFiltered}"
+									press="resetFilter"/> -->
+							</items>
+						</FlexBox>
+						<VBox
+							class="mb-3 pl-4 pr-3 text-center"
+							width="100%">
+							<SegmentedButton
+								id="ticketListType"
+								width="100%"
+								selectedKey="Queue"
+								selectionChange="listAllTickets">
+								<items>
+									<SegmentedButtonItem
+										text="SIRADA"
+										key="Queue"
+										width="120px"/>
+									<SegmentedButtonItem
+										text="İŞLEMDE"
+										key="InProcess"
+										width="120px"/>
+								</items>
+							</SegmentedButton>
+						</VBox>
+						<MessageStrip
+							class="mx-3"
+							text="İptal edilmiş, Tamamlanmış, Ertelenmiş ve Faturalanmış ticketları da listeler."
+							showIcon="true"
+							visible="{parameters>/showInfo}"/>
+						<List
+							id="ReservationList"
+							growing="true"
+							growingThreshold="50"
+							busyIndicatorDelay="0"
+							noDataText="Veri bulunamadı."
+							items="{
+								path: 'Reservation>/'
+							}"
+							updateFinished=".updateFinished">
+							<StandardListItem
+								class="upperCase"
+								title="{Reservation>number_plate}"
+								info="{Reservation>time} {Reservation>date}"
+								description="{Reservation>plug_no}"
+								icon="sap-icon://shipping-status"
+								iconDensityAware="false"
+								iconInset="false"
+								type="Navigation"
+								press="onListItemPress">
+								<customData>
+									<core:CustomData
+										key="status"
+										writeToDom="true"
+										value="{Reservation>status}"/>
+								</customData>
+							</StandardListItem>
+						</List>
+					</VBox>
+				</masterPages>
+				<!-- DETAIL -->
+				<detailPages>
+					<Page
+						id="detailPage"
+						showHeader="{parameters>/detailShowHeader}">
+						<VBox
+							class="VBoxCon"
+							id="content"
+							width="100%">
+							<!-- Status -->
+							<HBox class="center-center">
+								<MessageStrip
+									text="{selectedReservation>/status}"
+									type="{selectedReservation>/statusType}"
+									showIcon="true"
+									customIcon="{selectedReservation>/statusIcon}"
+									class="mr-1 upperCase"/>
+								<!-- <HBox
+									class="actionCon"
+									visible="{parameters>/actionBar}">
+									<Button
+										type="Reject"
+										press="onDeleteDialog"
+										icon="sap-icon://delete"/>
+									<Button
+										type="Transparent"
+										press="onEditDialog"
+										icon="sap-icon://edit"/>
+								</HBox> -->
+							</HBox>
+							<!-- Info -->
+							<l:Grid
+								class="mt-4"
+								containerQuery="true"
+								defaultSpan="XL12 L12 M12 S12">
+								<f:Card>
+									<f:content>
+										<VBox width="100%">
+											<l:Grid
+												containerQuery="true"
+												defaultSpan="XL3 L3 M6 S12"
+												class="cardInfo pa-0 mx-n2">
+												<!-- tarih. -->
+												<f:Card>
+													<f:header>
+														<card:Header
+															title="İŞLEM TARİHİ"
+															subtitle="{selectedReservation>/time} {selectedReservation>/date}"
+															iconSrc="sap-icon://appointment-2"
+															class="pa-3 textTruncate"/>
+													</f:header>
+												</f:Card>
+												<!-- Öncelik durumu -->
+												<f:Card>
+													<f:header>
+														<card:Header
+															title="FİŞ NO"
+															subtitle="{selectedReservation>/plug_no}"
+															iconSrc="sap-icon://number-sign"
+															class="pa-3 upperCase"/>
+													</f:header>
+												</f:Card>
+												<!-- sorumlu -->
+												<f:Card>
+													<f:header>
+														<card:Header
+															title="TESİS"
+															subtitle="{selectedReservation>/location}"
+															iconSrc="sap-icon://functional-location"
+															class="upperCase pa-3 textTruncate"/>
+													</f:header>
+												</f:Card>
+												<!-- plan. tarih. -->
+												<f:Card>
+													<f:header>
+														<card:Header
+															title="ARAÇ BİLGİSİ"
+															subtitle="{selectedReservation>/number_plate}"
+															iconSrc="sap-icon://shipping-status"
+															class="upperCase pa-3 textTruncate"/>
+													</f:header>
+												</f:Card>
+											</l:Grid>
+										</VBox>
+									</f:content>
+								</f:Card>
+							</l:Grid>
+							<!-- Detail -->
+							<l:VerticalLayout width="100%">
+								<l:Grid
+									containerQuery="true"
+									defaultSpan="XL3 L6 M6 S12">
+									<!-- şoför -->
+									<f:Card>
+										<f:header>
+											<card:Header
+												title="ŞOFÖR BİLGİLERİ"
+												class="upperCase"/>
+										</f:header>
+										<f:content>
+											<FlexBox
+												class="gap-3 pa-3"
+												direction="Column"
+												alignItems="Center"
+												width="100%">
+												<core:Icon
+													src="sap-icon://customer"
+													size="60px"
+													class="my-2 blue"/>
+												<Text
+													class="fw-bold upperCase"
+													text="{selectedReservation>/name} {selectedReservation>/surname}"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="TEL"/>
+												<Text
+													class=""
+													text="{selectedReservation>/phone}"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="ARAÇ"/>
+												<Text
+													class=""
+													text="{selectedReservation>/number_plate}"/>
+											</FlexBox>
+										</f:content>
+									</f:Card>
+									<!-- yük -->
+									<f:Card>
+										<f:header>
+											<card:Header
+												class="upperCase"
+												title="YÜK BİLGİLERİ"/>
+										</f:header>
+										<f:content>
+											<FlexBox
+												class="gap-3 pa-3"
+												direction="Column"
+												alignItems="Center"
+												width="100%">
+												<core:Icon
+													src="sap-icon://product"
+													size="60px"
+													class="my-2 blue"/>
+												<Text
+													class="fw-bold upperCase"
+													text="PARKE"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="YÜKLEME YERİ KODU"/>
+												<Text
+													class=""
+													text="N1"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="YÜKLEM YERİ TANIM"/>
+												<Text
+													class=""
+													text="PARKE"/>
+											</FlexBox>
+										</f:content>
+									</f:Card>
+									<!-- lokasyon -->
+									<f:Card>
+										<f:header>
+											<card:Header
+												class="upperCase"
+												title="TESİS BİLGİLERİ"/>
+										</f:header>
+										<f:content>
+											<FlexBox
+												class="gap-3 pa-3"
+												direction="Column"
+												alignItems="Center"
+												width="100%">
+												<core:Icon
+													src="sap-icon://functional-location"
+													size="60px"
+													class="my-2 blue"/>
+												<Text
+													class="fw-bold upperCase"
+													text="{selectedReservation>/location}"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="ADRES"/>
+												<Text
+													class=""
+													text="{selectedReservation>/location_data/address} / {selectedReservation>/location_data/city}"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="TESİS KODU"/>
+												<Text
+													class=""
+													text="{selectedReservation>/location_data/code}"/>
+											</FlexBox>
+										</f:content>
+									</f:Card>
+									<!-- vardiya -->
+									<f:Card>
+										<f:header>
+											<card:Header
+												class="upperCase"
+												title="VARDİYA BİLGİLERİ"/>
+										</f:header>
+										<f:content>
+											<FlexBox
+												class="gap-3 pa-3"
+												direction="Column"
+												alignItems="Center"
+												width="100%">
+												<core:Icon
+													src="sap-icon://list"
+													size="60px"
+													class="my-2 blue"/>
+												<Text
+													class="fw-bold upperCase"
+													text="Fiş No: {selectedReservation>/plug_no}"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="VARDİYA TARİHİ"/>
+												<Text
+													class=""
+													text="10.06.2023 14:45"/>
+												<Label
+													class="mt-1 mb-n3"
+													text="PLAKA"/>
+												<Text
+													class=""
+													text="{selectedReservation>/number_plate}"/>
+											</FlexBox>
+										</f:content>
+									</f:Card>
+								</l:Grid>
+							</l:VerticalLayout>
+						</VBox>
+					</Page>
+				</detailPages>
+			</SplitApp>
+		</content>
+		<footer>
+			<OverflowToolbar visible="{parameters>/footerAction}">
+				<ToolbarSpacer/>
+				<Button
+					type="Transparent"
+					press="onDeleteDialog"
+					icon="sap-icon://delete"/>
+				<Button
+					type="Transparent"
+					press="onEditDialog"
+					icon="sap-icon://edit"/>
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

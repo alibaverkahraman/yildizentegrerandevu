@@ -1,0 +1,34 @@
+<mvc:View
+	controllerName="com.uisap.randevu.controller.MainView"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0">
+	<f:ShellBar
+		id="ShellBar"
+		class="cusImg"
+		homeIcon="./assets/img/Yıldız_Entegre_Logo.png"
+		showNavButton="{App>/showNavButton}"
+		notificationsNumber="2"
+		navButtonPressed="navButtonPress"
+		homeIconPressed="homeIconPress">
+		<f:profile>
+			<Avatar
+				press="handlePopoverPress"
+				ariaHasPopup="Dialog"
+				id="avatar"/>
+		</f:profile>
+		<!-- <f:additionalContent>
+			<Text
+				visible="{Properties>/hideMobile}"
+				class="absolute-center"
+				text="RANDEVU SİSTEMİ"/>
+		</f:additionalContent> -->
+	</f:ShellBar>
+	<!-- APP -->
+	<App
+		id="pageContainer"
+		class="app"/>
+</mvc:View>
