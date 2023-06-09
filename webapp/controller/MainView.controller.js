@@ -78,6 +78,38 @@ sap.ui.define(
                 const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.navTo("Home");
             },
+
+            async handlePopoverPress(oEvent) {
+                const _this = this;
+                var oButton = oEvent.getSource(),
+                    oView = this.getView();
+                // create popover
+                if (!this._pPopover) {
+                    this._pPopover = Fragment.load({
+                        id: oView.getId() + "--detailStepDialog",
+                        name: "com.uisap.randevu.view.fragmentViews.popover",
+                        controller: this,
+                    }).then(function (oPopover) {
+                        oView.addDependent(oPopover);
+                        return oPopover;
+                    });
+                } else if (this.popover && this.popover.isOpen()) {
+                    this.popover.close();
+                    _this.busyDialog?.close();
+                    return;
+                }
+                this._pPopover.then(function (oPopover) {
+                    _this.popover = oPopover;
+                    _this.busyDialog?.close();
+                    oPopover.openBy(oButton);
+                });
+            },
+
+            logout(oEvent) {
+                const _this = this;
+                const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("Login");
+            },
         });
     }
 );
